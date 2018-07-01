@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# create workspace - http://wiki.ros.org/catkin/Tutorials/create_a_workspace
+source devel/setup.bash
+roslaunch ip_cam_10 ip_cam_10.launch
