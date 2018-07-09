@@ -1,0 +1,3 @@
+<launch>
+	<node pkg="ip_cam_10" name="ip_cam_10" type="laser_pad.py" output="screen" required="true" />
+</launch>

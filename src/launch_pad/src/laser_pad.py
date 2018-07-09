@@ -11,24 +11,9 @@ from cv_bridge import CvBridge, CvBridgeError
 from collections import deque
 import imutils
 import urllib #for reading image from URL 
-
-########################################### ADJUST HSV ########################################
-
-# define the lower and upper boundaries of the colors in the HSV color space
-#lower = {'colour':(0,210,70)} #assign new item lower['blue'] = (93, 10, 0)
-#upper = {'colour':(40,255,255)}
- 
-# define standard colors for circle around the object
-#colors = {'colour':(0,0,255)}
-
-###############################################################################################
-# 133 40 49
-# 
-lower = {'green':(15,160,100)}
-upper = {'green':(60,255,255)}
-colors = {'green':(45,200,150)}
-###############################################################################################
-
+from threshold import threshold
+from add_matrix import add_images
+from resize_image import resize_image
 
 
 ###############################################################################################
@@ -55,9 +40,20 @@ if __name__ == '__main__':
         camUrl='rtsp://192.168.0.112:5540/ch0'
         rospy.init_node('ipcam_10', anonymous=True)
         ip_camera = ipcamera(camUrl)
+        output = np.zeros((600,600,3))
+        # output = resize_image(output)
         while not rospy.is_shutdown():
             (rval, frame) = ip_camera.stream.read()
             if rval:
+                # ADD CODE HERE
+                # print(frame.shape)
+                frame = resize_image(frame)
+                # print(frame.shape)
+                frame = threshold(frame)
+                # print(frame.shape)
+                # print('output image shape',output.shape)
+                output = add_images(frame,output)
+
                 ip_camera.image_pub.publish(ip_camera.bridge.cv2_to_imgmsg(frame, "bgr8"))
             key = cv2.waitKey(1) & 0xFF
             if key == ord("q"):
